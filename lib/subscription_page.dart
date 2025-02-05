@@ -1,22 +1,31 @@
 import 'package:flutter/material.dart';
 
+import 'Login_page.dart';
+import 'about_page.dart';
+import 'buildNavButton.dart';
 import 'home_page.dart';
+import 'profile_page.dart';
 
-class Subscription_page extends StatelessWidget {
+class Subscription_page extends StatefulWidget {
+  @override
+  _AboutSubscriptionState createState() => _AboutSubscriptionState();
+}
+
+class _AboutSubscriptionState extends State<Subscription_page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepOrange,
+        backgroundColor: Colors.white,
         title: Text(
           'Simple, Transparent Pricing',
-          style: TextStyle(color: Colors.black, fontSize: 22),
+          style: TextStyle(color: Colors.blue, fontSize: 22),
         ),
       ),
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
-          decoration: BoxDecoration(color: Colors.black87),
+          decoration: BoxDecoration(color: Colors.white),
           child: Column(
             children: [
               PriceDetails(
@@ -56,6 +65,28 @@ class Subscription_page extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        shape: CircularNotchedRectangle(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildNavButton(context, "assets/images/home.png", Home_page(),
+                  widget.runtimeType),
+              buildNavButton(context, "assets/images/about.png", About_page(),
+                  widget.runtimeType),
+              buildNavButton(context, "assets/images/subscrption.png",
+                  Subscription_page(), widget.runtimeType),
+              buildNavButton(context, "assets/images/profile.png",
+                  Profile_page(), widget.runtimeType),
+              buildNavButton(context, "assets/images/login.png", LoginPage(),
+                  widget.runtimeType),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -83,7 +114,7 @@ class PriceDetails extends StatelessWidget {
       height: 300,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: Colors.black26,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -91,18 +122,18 @@ class PriceDetails extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(color: Colors.white, fontSize: 18),
+            style: TextStyle(color: Colors.black, fontSize: 18),
           ),
           SizedBox(height: 20),
           Row(
             children: [
               Text(
                 price,
-                style: TextStyle(color: Colors.white, fontSize: 22),
+                style: TextStyle(color: Colors.black, fontSize: 22),
               ),
               Text(
                 duration,
-                style: TextStyle(color: Colors.white, fontSize: 12),
+                style: TextStyle(color: Colors.black, fontSize: 12),
               ),
             ],
           ),
@@ -111,7 +142,7 @@ class PriceDetails extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Text(
                   '* $feature',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.black),
                 ),
               )),
           SizedBox(height: 20),
@@ -125,7 +156,7 @@ class PriceDetails extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepOrange,
+                backgroundColor: Colors.blue,
                 padding: EdgeInsets.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -133,7 +164,7 @@ class PriceDetails extends StatelessWidget {
               ),
               child: Text(
                 "Get Started",
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                style: TextStyle(fontSize: 18, color: Colors.black),
               ),
             ),
           ),

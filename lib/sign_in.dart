@@ -22,7 +22,7 @@ class _SigninState extends State<Signin> {
       body: SingleChildScrollView(
         child: Container(
           height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(color: Colors.black),
+          decoration: BoxDecoration(color: Colors.white),
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Form(
             key: _formKey,
@@ -70,7 +70,7 @@ class _SigninState extends State<Signin> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepOrange,
+                          backgroundColor: Colors.blue,
                           padding: EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),

@@ -16,9 +16,9 @@ class Text_Field extends StatelessWidget {
       style: TextStyle(color: Colors.white),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: Colors.white.withOpacity(0.60)),
+        hintStyle: TextStyle(color: Colors.white),
         filled: true,
-        fillColor: Colors.white.withOpacity(0.20),
+        fillColor: Colors.black38,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide.none,

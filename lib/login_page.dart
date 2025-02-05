@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ui_evelotion/home_page.dart';
+import 'package:ui_evelotion/profile_page.dart';
 import 'package:ui_evelotion/sign_in.dart';
+import 'package:ui_evelotion/subscription_page.dart';
 import 'package:ui_evelotion/text_field.dart';
+
+import 'about_page.dart';
+import 'buildNavButton.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -43,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
       body: SingleChildScrollView(
         child: Container(
           height: MediaQuery.of(context).size.height,
-          color: Colors.black,
+          color: Colors.white,
           padding: EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 1),
               Image.asset(
                 'assets/images/logo.png',
-                height: 200,
+                height: 250,
                 width: double.infinity,
               ),
               SizedBox(height: 20),
@@ -95,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: ElevatedButton(
                   onPressed: validateAndLogin,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrange,
+                    backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -118,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white30,
+                    backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -130,6 +135,28 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        shape: CircularNotchedRectangle(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildNavButton(context, "assets/images/home.png", Home_page(),
+                  widget.runtimeType),
+              buildNavButton(context, "assets/images/about.png", About_page(),
+                  widget.runtimeType),
+              buildNavButton(context, "assets/images/subscrption.png",
+                  Subscription_page(), widget.runtimeType),
+              buildNavButton(context, "assets/images/profile.png",
+                  Profile_page(), widget.runtimeType),
+              buildNavButton(context, "assets/images/login.png", LoginPage(),
+                  widget.runtimeType),
             ],
           ),
         ),
