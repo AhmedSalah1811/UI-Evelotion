@@ -13,7 +13,7 @@ class Home_page extends StatefulWidget {
 
 class _Home_pageState extends State<Home_page> {
   TextEditingController searchController = TextEditingController();
-  final _formKey = GlobalKey<FormState>(); // مفتاح التحقق من صحة الإدخال
+  final _formKey = GlobalKey<FormState>();
   String? errorMessage;
 
   void navigateToOutputPage(BuildContext context) {
