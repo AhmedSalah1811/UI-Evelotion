@@ -45,7 +45,7 @@ class _Home_pageState extends State<Home_page> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Form(
-                  key: _formKey, // ربط الفورم بمفتاح التحقق
+                  key: _formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -60,7 +60,7 @@ class _Home_pageState extends State<Home_page> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          errorText: errorMessage, // عرض رسالة الخطأ
+                          errorText: errorMessage,
                         ),
                         style: TextStyle(color: Colors.white),
                         validator: (value) {
