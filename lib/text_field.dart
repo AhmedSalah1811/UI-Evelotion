@@ -5,12 +5,14 @@ class Text_Field extends StatelessWidget {
   final bool isPassword;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+  final Color? borderColor;
 
   Text_Field({
     required this.hintText,
     this.isPassword = false,
     this.controller,
     this.validator,
+    this.borderColor,
   });
 
   @override
@@ -26,7 +28,17 @@ class Text_Field extends StatelessWidget {
         fillColor: Colors.black26,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide.none,
+          borderSide:
+              BorderSide(color: borderColor ?? Colors.transparent, width: 2),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide:
+              BorderSide(color: borderColor ?? Colors.transparent, width: 2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(color: borderColor ?? Colors.blue, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),

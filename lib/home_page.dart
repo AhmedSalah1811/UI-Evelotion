@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:ui_evelotion/output_page.dart';
+import 'package:ui_evelotion/sign_in.dart';
 import 'Login_page.dart';
 import 'buildNavButton.dart';
 import 'contact.dart';
@@ -82,10 +84,40 @@ class _Home_pageState extends State<Home_page> {
                         ),
                       ),
                       SizedBox(
-                        height: 80,
+                        height: 9,
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          text: 'You have 2 free prompts, want more? ',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black), // نص الجملة باللون الأسود
+                          children: [
+                            TextSpan(
+                              text: 'Sign in',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Signin()),
+                                  );
+                                },
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 70,
                       ),
                       Center(
-                        child: Text('Why Choose UI Evelotion?',
+                        child: Text('Why Choose UI Evolution?',
                             style:
                                 TextStyle(fontSize: 22, color: Colors.black)),
                       ),
