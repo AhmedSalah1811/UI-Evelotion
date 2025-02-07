@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ui_evelotion/about_page.dart';
 import 'package:ui_evelotion/home_page.dart';
 import 'package:ui_evelotion/output_page.dart';
-import 'package:ui_evelotion/profile_page.dart';
 import 'package:ui_evelotion/sign_in.dart';
 import 'package:ui_evelotion/subscription_page.dart';
 
@@ -50,12 +49,12 @@ class About extends StatelessWidget {
   }
 }
 
-class Profile extends StatelessWidget {
+class Contact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'profile',
-      home: Profile_page(),
+      home: Contact(),
     );
   }
 }
@@ -75,9 +74,7 @@ class output extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'output',
-      home: Output_page(
-        resultText: '',
-      ),
+      home: OutputPage(),
     );
   }
 }

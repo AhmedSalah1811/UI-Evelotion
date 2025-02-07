@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ui_evelotion/output_page.dart';
 import 'Login_page.dart';
 import 'buildNavButton.dart';
+import 'contact.dart';
 import 'subscription_page.dart';
-import 'profile_page.dart';
 import 'about_page.dart';
 
 class Home_page extends StatefulWidget {
@@ -22,7 +22,7 @@ class _Home_pageState extends State<Home_page> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Output_page(resultText: inputText),
+          builder: (context) => OutputPage(),
         ),
       );
     }
@@ -36,7 +36,7 @@ class _Home_pageState extends State<Home_page> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              height: 300,
+              height: 270,
               width: double.infinity,
               child: Image.asset('assets/images/logo.png'),
             ),
@@ -49,27 +49,6 @@ class _Home_pageState extends State<Home_page> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextFormField(
-                        controller: searchController,
-                        decoration: InputDecoration(
-                          hintText: "Enter your prompt here",
-                          hintStyle: TextStyle(color: Colors.white),
-                          filled: true,
-                          fillColor: Colors.black45,
-                          prefixIcon: Icon(Icons.search, color: Colors.white),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          errorText: errorMessage,
-                        ),
-                        style: TextStyle(color: Colors.white),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return "Enter your prompt";
-                          }
-                          return null;
-                        },
-                      ),
                       SizedBox(height: 8),
                       if (errorMessage != null)
                         Text(
@@ -96,12 +75,41 @@ class _Home_pageState extends State<Home_page> {
                           minimumSize: Size(200, 50),
                         ),
                         child: Text(
-                          "Generate",
+                          "Start Generate",
                           style: TextStyle(
                             fontSize: 18,
                           ),
                         ),
                       ),
+                      SizedBox(
+                        height: 80,
+                      ),
+                      Center(
+                        child: Text('Why Choose UI Evelotion?',
+                            style:
+                                TextStyle(fontSize: 22, color: Colors.black)),
+                      ),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      GridView.count(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(), //
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 1,
+                        mainAxisSpacing: 1,
+                        children: [
+                          Features(title: 'Speed', features: [
+                            'Generate complete UI in seconds not hours.Steramline your development '
+                          ]),
+                          Features(title: 'Custmoiztion', features: [
+                            'Tailor every aspect of your UI to match your brand and requirements perfectly'
+                          ]),
+                          Features(title: 'Professional', features: [
+                            'Get production-ready code that follows best practcis and modren standers'
+                          ]),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -124,8 +132,8 @@ class _Home_pageState extends State<Home_page> {
                   widget.runtimeType),
               buildNavButton(context, "assets/images/subscrption.png",
                   Subscription_page(), widget.runtimeType),
-              buildNavButton(context, "assets/images/profile.png",
-                  Profile_page(), widget.runtimeType),
+              buildNavButton(context, "assets/images/contact.png", Contact(),
+                  widget.runtimeType),
               buildNavButton(context, "assets/images/login.png", LoginPage(),
                   widget.runtimeType),
             ],

@@ -34,26 +34,40 @@ class _SigninState extends State<Signin> {
                   height: 200,
                   width: double.infinity,
                 ),
-                SizedBox(height: 25),
+                SizedBox(height: 20),
                 Text_Field(
                     hintText: 'First name', controller: firstNameController),
-                SizedBox(height: 20),
+                SizedBox(height: 15),
                 Text_Field(
                     hintText: 'Last name', controller: lastNameController),
-                SizedBox(height: 20),
+                SizedBox(height: 15),
                 Text_Field(
                     hintText: 'Enter your email', controller: emailController),
-                SizedBox(height: 20),
+                SizedBox(height: 15),
                 Text_Field(
                     hintText: 'Enter your password',
                     isPassword: true,
                     controller: passwordController),
-                SizedBox(height: 20),
+                SizedBox(height: 15),
+
+                // 🟢 Confirm Password Field (Using Text_Field with Validation)
                 Text_Field(
-                    hintText: 'Confirm your password',
-                    isPassword: true,
-                    controller: confirmPasswordController),
-                SizedBox(height: 30),
+                  hintText: 'Confirm your password',
+                  isPassword: true,
+                  controller: confirmPasswordController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password';
+                    }
+                    if (value != passwordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
+
+                SizedBox(height: 20),
+
                 Expanded(
                   child: Align(
                     alignment: Alignment.bottomCenter,
@@ -84,7 +98,7 @@ class _SigninState extends State<Signin> {
                     ),
                   ),
                 ),
-                SizedBox(height: 5),
+                SizedBox(height: 20),
               ],
             ),
           ),

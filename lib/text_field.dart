@@ -4,9 +4,14 @@ class Text_Field extends StatelessWidget {
   final String hintText;
   final bool isPassword;
   final TextEditingController? controller;
+  final String? Function(String?)? validator;
 
-  Text_Field(
-      {required this.hintText, this.isPassword = false, this.controller});
+  Text_Field({
+    required this.hintText,
+    this.isPassword = false,
+    this.controller,
+    this.validator,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,7 @@ class Text_Field extends StatelessWidget {
         hintText: hintText,
         hintStyle: TextStyle(color: Colors.white),
         filled: true,
-        fillColor: Colors.black38,
+        fillColor: Colors.black26,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide.none,
@@ -32,12 +37,7 @@ class Text_Field extends StatelessWidget {
           borderSide: BorderSide(color: Colors.red, width: 2),
         ),
       ),
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return "This field is required";
-        }
-        return null;
-      },
+      validator: validator,
     );
   }
 }

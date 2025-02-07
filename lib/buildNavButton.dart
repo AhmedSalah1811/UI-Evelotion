@@ -14,8 +14,8 @@ Widget buildNavButton(
       }
     },
     child: Container(
-      width: 50,
-      height: 50,
+      width: 40,
+      height: 40,
       decoration: BoxDecoration(
         color: isSelected ? Colors.blue.withOpacity(0.2) : Colors.transparent,
         borderRadius: BorderRadius.circular(10),

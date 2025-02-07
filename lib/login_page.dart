@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ui_evelotion/home_page.dart';
-import 'package:ui_evelotion/profile_page.dart';
 import 'package:ui_evelotion/sign_in.dart';
 import 'package:ui_evelotion/subscription_page.dart';
 import 'package:ui_evelotion/text_field.dart';
 
 import 'about_page.dart';
 import 'buildNavButton.dart';
+import 'contact.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -153,8 +153,8 @@ class _LoginPageState extends State<LoginPage> {
                   widget.runtimeType),
               buildNavButton(context, "assets/images/subscrption.png",
                   Subscription_page(), widget.runtimeType),
-              buildNavButton(context, "assets/images/profile.png",
-                  Profile_page(), widget.runtimeType),
+              buildNavButton(context, "assets/images/contact.png", Contact(),
+                  widget.runtimeType),
               buildNavButton(context, "assets/images/login.png", LoginPage(),
                   widget.runtimeType),
             ],

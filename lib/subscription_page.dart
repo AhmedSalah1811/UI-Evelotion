@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'Login_page.dart';
 import 'about_page.dart';
 import 'buildNavButton.dart';
+import 'contact.dart';
 import 'home_page.dart';
-import 'profile_page.dart';
 
 class Subscription_page extends StatefulWidget {
   @override
@@ -79,8 +79,8 @@ class _AboutSubscriptionState extends State<Subscription_page> {
                   widget.runtimeType),
               buildNavButton(context, "assets/images/subscrption.png",
                   Subscription_page(), widget.runtimeType),
-              buildNavButton(context, "assets/images/profile.png",
-                  Profile_page(), widget.runtimeType),
+              buildNavButton(context, "assets/images/contact.png", Contact(),
+                  widget.runtimeType),
               buildNavButton(context, "assets/images/login.png", LoginPage(),
                   widget.runtimeType),
             ],
@@ -114,7 +114,7 @@ class PriceDetails extends StatelessWidget {
       height: 300,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.black26,
+        color: Colors.black12,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
