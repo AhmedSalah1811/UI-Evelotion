@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class OutputPage extends StatefulWidget {
   @override
@@ -7,26 +9,51 @@ class OutputPage extends StatefulWidget {
 
 class _OutputPageState extends State<OutputPage> {
   final TextEditingController promptController = TextEditingController();
-  String userMessage = '';
-  String botMessage = 'Hello, how can I help you today?';
-  String imageUrl = '';
+  List<Map<String, String>> messages = []; // لحفظ المحادثات
+  bool isLoading = false;
 
-  void sendMessage() {
+  Future<void> sendMessage() async {
+    if (promptController.text.isEmpty) return;
+
+    String userMessage = promptController.text;
     setState(() {
-      if (promptController.text.isNotEmpty) {
-        userMessage = promptController.text;
-        botMessage =
-            'Here is the result based on your input: ${promptController.text}';
-
-        if (userMessage.contains('cat')) {
-          imageUrl = 'https://placekitten.com/200/300';
-        } else {
-          imageUrl = '';
-        }
-
-        promptController.clear();
-      }
+      messages.add({"role": "user", "message": userMessage});
+      isLoading = true;
     });
+
+    promptController.clear();
+
+    try {
+      var response = await http.post(
+        Uri.parse('https://ui-evolution.onrender.com/home/chat'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"message": userMessage}),
+      );
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        setState(() {
+          messages.add(
+              {"role": "bot", "message": data['response'] ?? "No response"});
+          if (data.containsKey('image')) {
+            messages.add({"role": "image", "message": data['image']});
+          }
+        });
+      } else {
+        setState(() {
+          messages.add(
+              {"role": "bot", "message": "Error: Unable to fetch response."});
+        });
+      }
+    } catch (e) {
+      setState(() {
+        messages.add({"role": "bot", "message": "Error: ${e.toString()}"});
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -34,62 +61,46 @@ class _OutputPageState extends State<OutputPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("UI Evolution"),
+        title: Text("UI Evolution Chat"),
         backgroundColor: Colors.blue,
       ),
       body: Column(
         children: [
           Expanded(
-            child: ListView(
+            child: ListView.builder(
               padding: EdgeInsets.all(10),
-              children: [
-                // Bot message
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 10),
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                var message = messages[index];
+                if (message["role"] == "image") {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Image.network(message["message"]!),
+                  );
+                }
+                return Container(
+                  margin: EdgeInsets.symmetric(vertical: 5),
                   padding: EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    color:
-                        Colors.grey[300], // Gray background for bot's message
+                    color: message["role"] == "user"
+                        ? Colors.blue
+                        : Colors.grey[300],
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
-                    botMessage,
-                    style: TextStyle(color: Colors.black, fontSize: 16),
-                  ),
-                ),
-                // User message
-                if (userMessage.isNotEmpty)
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: Colors.blue, // Blue background for user's message
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      userMessage,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    message["message"]!,
+                    style: TextStyle(
+                      color: message["role"] == "user"
+                          ? Colors.white
+                          : Colors.black,
+                      fontSize: 16,
                     ),
                   ),
-                if (imageUrl.isNotEmpty)
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                        ),
-                      ],
-                    ),
-                    child: Image.network(imageUrl),
-                  ),
-              ],
+                );
+              },
             ),
           ),
+          if (isLoading) CircularProgressIndicator(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -110,7 +121,7 @@ class _OutputPageState extends State<OutputPage> {
                 ),
                 IconButton(
                   icon: Icon(Icons.send, color: Colors.blue),
-                  onPressed: sendMessage, // Send the message
+                  onPressed: sendMessage,
                 ),
               ],
             ),

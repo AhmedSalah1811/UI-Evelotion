@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:ui_evelotion/home_page.dart';
 import 'package:ui_evelotion/sign_in.dart';
 import 'package:ui_evelotion/subscription_page.dart';
@@ -19,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
 
   String? emailError;
   String? passwordError;
+  String? loginError;
 
   @override
   void dispose() {
@@ -27,18 +30,49 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  // دالة تسجيل الدخول عبر API
+  Future<void> login() async {
+    final String url = 'https://ui-evolution.onrender.com/auth/logIn';
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': emailController.text,
+          'password': passwordController.text,
+        }),
+      );
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        // نجاح تسجيل الدخول، الانتقال للصفحة الرئيسية
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Home_page()),
+        );
+      } else {
+        setState(() {
+          loginError = responseData['message'] ?? 'Login failed';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        loginError = 'An error occurred. Please try again later.';
+      });
+    }
+  }
+
   void validateAndLogin() {
     setState(() {
       emailError = emailController.text.isEmpty ? "Email is required" : null;
       passwordError =
           passwordController.text.isEmpty ? "Password is required" : null;
+      loginError = null;
     });
 
     if (emailError == null && passwordError == null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Home_page()),
-      );
+      login(); // استدعاء دالة تسجيل الدخول
     }
   }
 
@@ -88,6 +122,14 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(
                     passwordError!,
+                    style: TextStyle(color: Colors.red, fontSize: 14),
+                  ),
+                ),
+              if (loginError != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    loginError!,
                     style: TextStyle(color: Colors.red, fontSize: 14),
                   ),
                 ),

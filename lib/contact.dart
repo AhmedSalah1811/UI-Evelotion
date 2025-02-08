@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:ui_evelotion/text_field.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'Login_page.dart';
 import 'about_page.dart';
 import 'buildNavButton.dart';
 import 'home_page.dart';
 import 'subscription_page.dart';
+import 'text_field.dart';
 
 class Contact extends StatefulWidget {
   @override
@@ -12,6 +15,56 @@ class Contact extends StatefulWidget {
 }
 
 class _ContactState extends State<Contact> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController messageController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    messageController.dispose();
+    super.dispose();
+  }
+
+  // دالة إرسال الفيدباك إلى السيرفر
+  void sendFeedback() async {
+    String name = nameController.text.trim();
+    String email = emailController.text.trim();
+    String message = messageController.text.trim();
+
+    if (name.isEmpty || email.isEmpty || message.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill all fields")),
+      );
+      return;
+    }
+
+    final url = Uri.parse("https://ui-evolution.onrender.com/home/feedback");
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "name": name,
+        "email": email,
+        "message": message,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Feedback sent successfully!")),
+      );
+      nameController.clear();
+      emailController.clear();
+      messageController.clear();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to send feedback")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,20 +91,30 @@ class _ContactState extends State<Contact> {
                 ),
               ),
               SizedBox(height: 50),
+
+              // Name Field
               Text(
                 "Name",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 5),
-              Text_Field(hintText: 'Enter your name'),
+              Text_Field(
+                  hintText: 'Enter your name', controller: nameController),
+
               SizedBox(height: 20),
+
+              // Email Field
               Text(
-                "Phone",
+                "Email",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 5),
-              Text_Field(hintText: 'Enter your phone number'),
+              Text_Field(
+                  hintText: 'Enter your email', controller: emailController),
+
               SizedBox(height: 20),
+
+              // Message Field
               Text(
                 "Message",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -59,12 +122,17 @@ class _ContactState extends State<Contact> {
               SizedBox(height: 5),
               Container(
                 height: 120,
-                child: Text_Field(hintText: 'Enter your message'),
+                child: Text_Field(
+                    hintText: 'Enter your message',
+                    controller: messageController),
               ),
+
               SizedBox(height: 30),
+
+              // Send Button
               Center(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: sendFeedback,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),

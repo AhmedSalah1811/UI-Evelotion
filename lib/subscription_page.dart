@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'Login_page.dart';
 import 'about_page.dart';
@@ -36,7 +38,6 @@ class _AboutSubscriptionState extends State<Subscription_page> {
                   'Up to 5 projects',
                   'Basic Components',
                   'Email Support',
-                  'Up to 5 projects',
                 ],
               ),
               PriceDetails(
@@ -105,6 +106,32 @@ class PriceDetails extends StatelessWidget {
     required this.features,
   }) : super(key: key);
 
+  // دالة إرسال بيانات الاشتراك للسيرفر
+  void sendSubscription(BuildContext context) async {
+    final url = Uri.parse("https://ui-evolution.onrender.com/home/subscribe");
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "plan": title,
+        "price": price,
+        "duration": duration,
+      }),
+    );
+
+    // التحقق من نجاح الطلب وإظهار رسالة
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Subscription Successful: $title")),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Subscription Failed, Try Again")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -149,12 +176,8 @@ class PriceDetails extends StatelessWidget {
           SizedBox(
             width: 280,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home_page()),
-                );
-              },
+              onPressed: () =>
+                  sendSubscription(context), // إرسال الاشتراك عند الضغط
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 padding: EdgeInsets.symmetric(vertical: 10),
@@ -164,7 +187,7 @@ class PriceDetails extends StatelessWidget {
               ),
               child: Text(
                 "Get Started",
-                style: TextStyle(fontSize: 18, color: Colors.black),
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
           ),
