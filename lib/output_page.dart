@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ui_evelotion/Login_page.dart';
 
 class OutputPage extends StatefulWidget {
   @override
@@ -13,6 +14,8 @@ class _OutputPageState extends State<OutputPage> {
   List<Map<String, String>> messages = [];
   bool isLoading = false;
   String? authToken;
+  String? loginPromptMessage;
+  int attemptCount = 0; // تتبع عدد المحاولات
 
   @override
   void initState() {
@@ -20,24 +23,37 @@ class _OutputPageState extends State<OutputPage> {
     loadToken();
   }
 
-  // تحميل التوكن من SharedPreferences عند بدء تشغيل الصفحة
   Future<void> loadToken() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      authToken =
-          prefs.getString('user_token'); // هنا يتم استرجاع التوكن المخزن
+      authToken = prefs.getString('user_token');
     });
   }
 
-  Future<void> sendMessage() async {
-    if (promptController.text.isEmpty || authToken == null) return;
+  Future<void> removeToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_token');
+  }
 
-    String userMessage = promptController.text;
+  Future<void> sendMessage() async {
+    if (promptController.text.isEmpty) return;
+
+    if (authToken == null && attemptCount >= 3) {
+      setState(() {
+        loginPromptMessage = "You have reached 3 prompts.want more,please ";
+      });
+      return;
+    }
+
     setState(() {
-      messages.add({"role": "user", "message": userMessage});
+      messages.add({"role": "user", "message": promptController.text});
       isLoading = true;
+      loginPromptMessage = null;
+      if (authToken == null)
+        attemptCount++; // زيادة المحاولات إذا لم يكن مسجلًا
     });
 
+    String userMessage = promptController.text;
     promptController.clear();
 
     try {
@@ -45,8 +61,7 @@ class _OutputPageState extends State<OutputPage> {
         Uri.parse('https://292d-156-210-251-202.ngrok-free.app/home/chat'),
         headers: {
           "Content-Type": "application/json",
-          "Authorization":
-              "Bearer $authToken", // التوكن يتم إضافته هنا في الهيدر
+          "Authorization": authToken != null ? "Bearer $authToken" : "",
         },
         body: jsonEncode({"message": userMessage}),
       );
@@ -54,11 +69,10 @@ class _OutputPageState extends State<OutputPage> {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         setState(() {
-          if (data.containsKey('imagePath')) {
-            messages.add({"role": "bot", "message": data['imagePath']});
-          } else {
-            messages.add({"role": "bot", "message": "No image received."});
-          }
+          messages.add({
+            "role": "bot",
+            "message": data['imagePath'] ?? "No image received."
+          });
         });
       } else {
         setState(() {
@@ -77,6 +91,19 @@ class _OutputPageState extends State<OutputPage> {
     }
   }
 
+  void navigateToLogin() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+  }
+
+  @override
+  void dispose() {
+    removeToken();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,6 +114,30 @@ class _OutputPageState extends State<OutputPage> {
       ),
       body: Column(
         children: [
+          if (loginPromptMessage != null)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    loginPromptMessage!,
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  ),
+                  SizedBox(width: 5),
+                  GestureDetector(
+                    onTap: navigateToLogin,
+                    child: Text(
+                      'Log In',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.all(10),

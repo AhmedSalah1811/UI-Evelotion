@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:ui_evelotion/home_page.dart';
 import 'package:ui_evelotion/output_page.dart';
+import 'package:ui_evelotion/profile.dart';
 
-import '../Login_page.dart';
-import '../about_page.dart';
-import '../buildNavButton.dart';
-import '../contact.dart';
-import '../home_page.dart';
-import '../subscription_page.dart';
+import 'Login_page.dart';
+import 'buildNavButton.dart';
+import 'contact.dart';
+import 'subscription_page.dart';
+import 'about_page.dart';
 
-class HomepageAfterLogin extends StatefulWidget {
+class Home_page_after_login extends StatefulWidget {
   @override
-  _Home_PageState createState() => _Home_PageState();
+  _Home_page_State createState() => _Home_page_State();
 }
 
-class _Home_PageState extends State<HomepageAfterLogin> {
+class _Home_page_State extends State<Home_page_after_login> {
   TextEditingController searchController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String? errorMessage;
@@ -33,7 +34,6 @@ class _Home_PageState extends State<HomepageAfterLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -140,8 +140,8 @@ class _Home_PageState extends State<HomepageAfterLogin> {
                   Subscription_page(), widget.runtimeType),
               buildNavButton(context, "assets/images/contact.png", Contact(),
                   widget.runtimeType),
-              buildNavButton(context, "assets/images/login.png", LoginPage(),
-                  widget.runtimeType),
+              buildNavButton(context, "assets/images/profile.png",
+                  ProfilePage(), widget.runtimeType),
             ],
           ),
         ),

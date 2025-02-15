@@ -88,7 +88,7 @@ class _Home_pageState extends State<Home_page> {
                       ),
                       RichText(
                         text: TextSpan(
-                          text: 'You have 2 free prompts, want more? ',
+                          text: 'You have 3 free prompts, want more? ',
                           style: TextStyle(
                               fontSize: 12,
                               color: Colors.black), // نص الجملة باللون الأسود

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ui_evelotion/main.dart';
-import 'package:ui_evelotion/sign_in.dart';
 
+import 'package:ui_evelotion/homepage_after_login.dart';
+import 'package:ui_evelotion/sign_in.dart';
 import 'package:ui_evelotion/text_field.dart';
 
 class LoginPage extends StatefulWidget {
@@ -48,10 +48,10 @@ class _LoginPageState extends State<LoginPage> {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('user_token', token);
 
-        // تعديل التوجيه: تم تغيير الصفحة إلى Homepage بعد النجاح
+        // توجيه المستخدم إلى صفحة AboutPage بعد النجاح
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => Home_page_after_login()),
         );
       } else {
         setState(() {
@@ -76,57 +76,6 @@ class _LoginPageState extends State<LoginPage> {
     if (emailError == null && passwordError == null) {
       login();
     }
-  }
-
-  // دالة استرجاع التوكن
-  Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('user_token');
-  }
-
-  // دالة إرسال الطلب باستخدام التوكن
-  Future<void> fetchDataWithToken() async {
-    final token = await getToken();
-    if (token == null) {
-      setState(() {
-        loginError = 'No token found. Please log in again.';
-      });
-      return;
-    }
-
-    final String url = 'https://ui-evolution.onrender.com/protected-endpoint';
-    try {
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        print("Data: $responseData");
-      } else {
-        setState(() {
-          loginError = 'Failed to fetch data';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        loginError = 'An error occurred while fetching data';
-      });
-    }
-  }
-
-  // دالة تسجيل الخروج
-  Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user_token');
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
   }
 
   @override
@@ -185,13 +134,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Navigate to the Sign Up page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Homepage()),
-                    );
-                  },
+                  onPressed: validateAndLogin, // التحقق وتسجيل الدخول
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(vertical: 16),
@@ -206,7 +149,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 20),
-              // Add the "First time?" text and "Sign Up" button here
               Text(
                 "First time?",
                 style: TextStyle(fontSize: 14, color: Colors.black54),
@@ -216,7 +158,6 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigate to the Sign Up page
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Signin()),

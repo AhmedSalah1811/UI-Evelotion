@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ui_evelotion/about_page.dart';
 import 'package:ui_evelotion/home_page.dart';
+import 'package:ui_evelotion/homepage_after_login.dart';
 import 'package:ui_evelotion/output_page.dart';
 import 'package:ui_evelotion/sign_in.dart';
 import 'package:ui_evelotion/subscription_page.dart';
@@ -89,12 +90,22 @@ class Signpage extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class Homepage_AfterLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Sign in',
-      home: HomePage(),
+      home: Home_page_after_login(),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sign in',
+      home: ProfilePage(),
     );
   }
 }
