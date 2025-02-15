@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:ui_evelotion/Login_page.dart';
 import 'dart:convert';
 import 'package:ui_evelotion/home_page.dart';
 import 'package:ui_evelotion/text_field.dart';
@@ -19,17 +20,15 @@ class _SigninState extends State<Signin> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  // متغيرات لحالة الأخطاء في الإدخال
   bool nameError = false;
   bool emailError = false;
   bool passwordError = false;
   bool confirmPasswordError = false;
-  bool isLoading = false; // متغير لحالة تحميل الـ API
+  bool isLoading = false;
 
-  // دالة تسجيل المستخدم وإرسال البيانات إلى الـ API
   Future<void> registerUser() async {
     setState(() {
-      isLoading = true; // تفعيل وضع التحميل عند الإرسال
+      isLoading = true;
     });
 
     final url = Uri.parse(
@@ -60,7 +59,7 @@ class _SigninState extends State<Signin> {
       // الانتقال إلى الصفحة الرئيسية بعد نجاح التسجيل
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Home_page()),
+        MaterialPageRoute(builder: (context) => LoginPage()),
       );
     } else {
       // فشل التسجيل، إظهار رسالة الخطأ القادمة من الـ API
@@ -72,7 +71,6 @@ class _SigninState extends State<Signin> {
     }
   }
 
-  // دالة التحقق من صحة المدخلات قبل إرسالها إلى السيرفر
   void validateAndSubmit() {
     setState(() {
       nameError = nameController.text.isEmpty;
@@ -83,11 +81,11 @@ class _SigninState extends State<Signin> {
     });
 
     if (!_formKey.currentState!.validate()) {
-      return; // إيقاف العملية إذا كان هناك خطأ في التحقق
+      return;
     }
 
     if (!nameError && !emailError && !passwordError && !confirmPasswordError) {
-      registerUser(); // استدعاء دالة التسجيل
+      registerUser();
     }
   }
 
@@ -110,7 +108,6 @@ class _SigninState extends State<Signin> {
                 ),
                 SizedBox(height: 20),
 
-                // حقل الاسم
                 Text_Field(
                   hintText: 'Name',
                   controller: nameController,
@@ -118,7 +115,6 @@ class _SigninState extends State<Signin> {
                 ),
                 SizedBox(height: 15),
 
-                // حقل البريد الإلكتروني
                 Text_Field(
                   hintText: 'Email',
                   controller: emailController,
@@ -126,7 +122,6 @@ class _SigninState extends State<Signin> {
                 ),
                 SizedBox(height: 15),
 
-                // حقل كلمة المرور
                 Text_Field(
                   hintText: 'Password',
                   isPassword: true,
@@ -135,7 +130,6 @@ class _SigninState extends State<Signin> {
                 ),
                 SizedBox(height: 15),
 
-                // حقل تأكيد كلمة المرور
                 Text_Field(
                   hintText: 'Confirm Password',
                   isPassword: true,
@@ -157,9 +151,7 @@ class _SigninState extends State<Signin> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: isLoading
-                        ? null
-                        : validateAndSubmit, // تعطيل الزر أثناء تحميل البيانات
+                    onPressed: isLoading ? null : validateAndSubmit,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       padding: EdgeInsets.symmetric(vertical: 16),
@@ -168,9 +160,7 @@ class _SigninState extends State<Signin> {
                       ),
                     ),
                     child: isLoading
-                        ? CircularProgressIndicator(
-                            color:
-                                Colors.white) // إظهار مؤشر تحميل أثناء الإرسال
+                        ? CircularProgressIndicator(color: Colors.white)
                         : Text("Sign Up",
                             style:
                                 TextStyle(fontSize: 18, color: Colors.white)),

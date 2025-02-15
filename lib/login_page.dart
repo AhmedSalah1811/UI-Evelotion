@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:ui_evelotion/home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ui_evelotion/main.dart';
 import 'package:ui_evelotion/sign_in.dart';
-import 'package:ui_evelotion/subscription_page.dart';
-import 'package:ui_evelotion/text_field.dart';
 
-import 'about_page.dart';
-import 'buildNavButton.dart';
-import 'contact.dart';
+import 'package:ui_evelotion/text_field.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -30,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // دالة تسجيل الدخول عبر API
+  // دالة تسجيل الدخول عبر API وتخزين التوكن
   Future<void> login() async {
     final String url = 'https://ui-evolution.onrender.com/auth/logIn';
     try {
@@ -44,12 +41,17 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       final responseData = jsonDecode(response.body);
+      final String? token = responseData['token'];
 
-      if (response.statusCode == 200) {
-        // نجاح تسجيل الدخول، الانتقال للصفحة الرئيسية
+      if (response.statusCode == 200 && token != null) {
+        // حفظ التوكن في SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user_token', token);
+
+        // تعديل التوجيه: تم تغيير الصفحة إلى Homepage بعد النجاح
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Home_page()),
+          MaterialPageRoute(builder: (context) => HomePage()),
         );
       } else {
         setState(() {
@@ -72,8 +74,59 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     if (emailError == null && passwordError == null) {
-      login(); // استدعاء دالة تسجيل الدخول
+      login();
     }
+  }
+
+  // دالة استرجاع التوكن
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('user_token');
+  }
+
+  // دالة إرسال الطلب باستخدام التوكن
+  Future<void> fetchDataWithToken() async {
+    final token = await getToken();
+    if (token == null) {
+      setState(() {
+        loginError = 'No token found. Please log in again.';
+      });
+      return;
+    }
+
+    final String url = 'https://ui-evolution.onrender.com/protected-endpoint';
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        print("Data: $responseData");
+      } else {
+        setState(() {
+          loginError = 'Failed to fetch data';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        loginError = 'An error occurred while fetching data';
+      });
+    }
+  }
+
+  // دالة تسجيل الخروج
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_token');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
   }
 
   @override
@@ -94,8 +147,6 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
               ),
               SizedBox(height: 20),
-
-              // Email Field
               Text_Field(
                 hintText: 'Enter your email',
                 controller: emailController,
@@ -108,10 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(color: Colors.red, fontSize: 14),
                   ),
                 ),
-
               SizedBox(height: 20),
-
-              // Password Field
               Text_Field(
                 hintText: 'Enter your password',
                 controller: passwordController,
@@ -133,14 +181,17 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(color: Colors.red, fontSize: 14),
                   ),
                 ),
-
               SizedBox(height: 30),
-
-              // Login Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: validateAndLogin,
+                  onPressed: () {
+                    // Navigate to the Sign Up page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Homepage()),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(vertical: 16),
@@ -154,51 +205,36 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 70),
+              SizedBox(height: 20),
+              // Add the "First time?" text and "Sign Up" button here
+              Text(
+                "First time?",
+                style: TextStyle(fontSize: 14, color: Colors.black54),
+              ),
+              SizedBox(height: 10),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    // Navigate to the Sign Up page
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Signin()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Colors.green,
                     padding: EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                   child: Text(
-                    "Sign in",
+                    "Sign Up",
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
-        shape: CircularNotchedRectangle(),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              buildNavButton(context, "assets/images/home.png", Home_page(),
-                  widget.runtimeType),
-              buildNavButton(context, "assets/images/about.png", About_page(),
-                  widget.runtimeType),
-              buildNavButton(context, "assets/images/subscrption.png",
-                  Subscription_page(), widget.runtimeType),
-              buildNavButton(context, "assets/images/contact.png", Contact(),
-                  widget.runtimeType),
-              buildNavButton(context, "assets/images/login.png", LoginPage(),
-                  widget.runtimeType),
             ],
           ),
         ),

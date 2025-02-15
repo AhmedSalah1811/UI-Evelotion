@@ -1,19 +1,19 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:ui_evelotion/output_page.dart';
 
-import 'Login_page.dart';
-import 'buildNavButton.dart';
-import 'contact.dart';
-import 'subscription_page.dart';
-import 'about_page.dart';
+import '../Login_page.dart';
+import '../about_page.dart';
+import '../buildNavButton.dart';
+import '../contact.dart';
+import '../home_page.dart';
+import '../subscription_page.dart';
 
-class Home_page extends StatefulWidget {
+class HomepageAfterLogin extends StatefulWidget {
   @override
-  _Home_pageState createState() => _Home_pageState();
+  _Home_PageState createState() => _Home_PageState();
 }
 
-class _Home_pageState extends State<Home_page> {
+class _Home_PageState extends State<HomepageAfterLogin> {
   TextEditingController searchController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String? errorMessage;
@@ -33,6 +33,7 @@ class _Home_pageState extends State<Home_page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -85,33 +86,6 @@ class _Home_pageState extends State<Home_page> {
                       ),
                       SizedBox(
                         height: 9,
-                      ),
-                      RichText(
-                        text: TextSpan(
-                          text: 'You have 2 free prompts, want more? ',
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black), // نص الجملة باللون الأسود
-                          children: [
-                            TextSpan(
-                              text: 'Login',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => LoginPage()),
-                                  );
-                                },
-                            ),
-                          ],
-                        ),
                       ),
                       SizedBox(
                         height: 70,
