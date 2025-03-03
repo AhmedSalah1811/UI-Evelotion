@@ -15,29 +15,39 @@ class _OutputPageState extends State<OutputPage> {
   bool isLoading = false;
   String? authToken;
   String? loginPromptMessage;
-  int attemptCount = 0; // تتبع عدد المحاولات
+  int attemptCount = 0; // عدد المحاولات
 
   @override
   void initState() {
     super.initState();
-    loadToken();
+    loadTokenAndAttempts();
   }
 
-  Future<void> loadToken() async {
+  // تحميل التوكن وعدد المحاولات من SharedPreferences
+  Future<void> loadTokenAndAttempts() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       authToken = prefs.getString('user_token');
+      attemptCount = prefs.getInt('attempt_count') ?? 0;
+
+      // إذا كان المستخدم غير مسجل دخول، يتم تصفير عدد المحاولات
+      if (authToken == null) {
+        attemptCount = 0;
+        prefs.setInt('attempt_count', 0);
+      }
     });
   }
 
-  Future<void> removeToken() async {
+  // حفظ عدد المحاولات في SharedPreferences
+  Future<void> saveAttemptCount() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user_token');
+    prefs.setInt('attempt_count', attemptCount);
   }
 
   Future<void> sendMessage() async {
     if (promptController.text.isEmpty) return;
 
+    // التحقق من عدد المحاولات إذا لم يكن مسجل دخول
     if (authToken == null && attemptCount >= 3) {
       setState(() {
         loginPromptMessage = "You have reached 3 prompts.want more,please ";
@@ -49,22 +59,39 @@ class _OutputPageState extends State<OutputPage> {
       messages.add({"role": "user", "message": promptController.text});
       isLoading = true;
       loginPromptMessage = null;
-      if (authToken == null)
+
+      if (authToken == null) {
         attemptCount++; // زيادة المحاولات إذا لم يكن مسجلًا
+        saveAttemptCount(); // حفظ العدد في SharedPreferences
+      }
     });
 
     String userMessage = promptController.text;
     promptController.clear();
 
     try {
-      var response = await http.post(
-        Uri.parse('https://292d-156-210-251-202.ngrok-free.app/home/chat'),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": authToken != null ? "Bearer $authToken" : "",
-        },
-        body: jsonEncode({"message": userMessage}),
-      );
+      print('the token');
+      print(authToken);
+      var response;
+      if (authToken != null) {
+        response = await http.post(
+          Uri.parse('https://884d-156-211-17-212.ngrok-free.app/home/chat'),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $authToken",
+          },
+          body: jsonEncode({"message": userMessage}),
+        );
+      } else {
+        print('token is null');
+        response = await http.post(
+          Uri.parse('https://884d-156-211-17-212.ngrok-free.app/home/chat'),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode({"message": userMessage}),
+        );
+      }
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
@@ -96,12 +123,6 @@ class _OutputPageState extends State<OutputPage> {
       context,
       MaterialPageRoute(builder: (context) => LoginPage()),
     );
-  }
-
-  @override
-  void dispose() {
-    removeToken();
-    super.dispose();
   }
 
   @override

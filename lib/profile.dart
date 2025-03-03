@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ui_evelotion/home_page.dart';
-import 'package:ui_evelotion/login_page.dart';
 
 class ProfilePage extends StatelessWidget {
   final String name = "Ahmed";
