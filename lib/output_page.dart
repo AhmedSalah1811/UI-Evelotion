@@ -23,14 +23,12 @@ class _OutputPageState extends State<OutputPage> {
     loadTokenAndAttempts();
   }
 
-  // تحميل التوكن وعدد المحاولات من SharedPreferences
   Future<void> loadTokenAndAttempts() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       authToken = prefs.getString('user_token');
       attemptCount = prefs.getInt('attempt_count') ?? 0;
 
-      // إذا كان المستخدم غير مسجل دخول، يتم تصفير عدد المحاولات
       if (authToken == null) {
         attemptCount = 0;
         prefs.setInt('attempt_count', 0);
