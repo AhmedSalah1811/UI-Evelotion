@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ui_evelotion/profile.dart';
 import 'dart:convert';
 
 import 'Login_page.dart';
 import 'about_page.dart';
 import 'buildNavButton.dart';
 import 'home_page.dart';
+import 'homepage_after_login.dart';
 import 'subscription_page.dart';
 import 'text_field.dart';
 
@@ -158,16 +161,38 @@ class _ContactState extends State<Contact> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              buildNavButton(context, "assets/images/home.png", Home_page(),
-                  widget.runtimeType),
+              // زر الهوم
+              IconButton(
+                icon: Image.asset("assets/images/home.png"),
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  final String? token = prefs.getString('user_token');
+                  if (token != null) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Home_page_after_login(),
+                      ),
+                    );
+                  } else {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Home_page(),
+                      ),
+                    );
+                  }
+                },
+              ),
+
               buildNavButton(context, "assets/images/about.png", About_page(),
                   widget.runtimeType),
               buildNavButton(context, "assets/images/subscrption.png",
                   Subscription_page(), widget.runtimeType),
               buildNavButton(context, "assets/images/contact.png", Contact(),
                   widget.runtimeType),
-              buildNavButton(context, "assets/images/login.png", LoginPage(),
-                  widget.runtimeType),
+              buildNavButton(context, "assets/images/profile.png",
+                  ProfilePage(), widget.runtimeType),
             ],
           ),
         ),

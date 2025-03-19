@@ -15,7 +15,7 @@ class _OutputPageState extends State<OutputPage> {
   bool isLoading = false;
   String? authToken;
   String? loginPromptMessage;
-  int attemptCount = 0; // عدد المحاولات
+  int attemptCount = 0;
 
   @override
   void initState() {
@@ -36,7 +36,6 @@ class _OutputPageState extends State<OutputPage> {
     });
   }
 
-  // حفظ عدد المحاولات في SharedPreferences
   Future<void> saveAttemptCount() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('attempt_count', attemptCount);
@@ -45,7 +44,6 @@ class _OutputPageState extends State<OutputPage> {
   Future<void> sendMessage() async {
     if (promptController.text.isEmpty) return;
 
-    // التحقق من عدد المحاولات إذا لم يكن مسجل دخول
     if (authToken == null && attemptCount >= 3) {
       setState(() {
         loginPromptMessage = "You have reached 3 prompts.want more,please ";
@@ -59,8 +57,8 @@ class _OutputPageState extends State<OutputPage> {
       loginPromptMessage = null;
 
       if (authToken == null) {
-        attemptCount++; // زيادة المحاولات إذا لم يكن مسجلًا
-        saveAttemptCount(); // حفظ العدد في SharedPreferences
+        attemptCount++;
+        saveAttemptCount();
       }
     });
 
@@ -68,8 +66,8 @@ class _OutputPageState extends State<OutputPage> {
     promptController.clear();
 
     try {
-      print('the token');
-      print(authToken);
+      print('the token $authToken');
+
       var response;
       if (authToken != null) {
         response = await http.post(

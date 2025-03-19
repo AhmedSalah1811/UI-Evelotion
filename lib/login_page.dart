@@ -3,9 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:ui_evelotion/homepage_after_login.dart';
-import 'package:ui_evelotion/sign_in.dart';
-import 'package:ui_evelotion/text_field.dart';
+import 'Sign_in.dart';
+import 'homepage_after_login.dart';
+import 'text_field.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('user_token', token);
 
-        // توجيه المستخدم إلى صفحة AboutPage بعد النجاح
+        // توجيه المستخدم إلى صفحة Home_page_after_login بعد النجاح
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => Home_page_after_login()),

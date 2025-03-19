@@ -1,111 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:ui_evelotion/about_page.dart';
-import 'package:ui_evelotion/home_page.dart';
-import 'package:ui_evelotion/homepage_after_login.dart';
-import 'package:ui_evelotion/output_page.dart';
-import 'package:ui_evelotion/sign_in.dart';
-import 'package:ui_evelotion/subscription_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'Home_page.dart';
+import 'homepage_after_login.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter is initialized
+  final bool isLoggedIn =
+      await checkLoginStatus(); // Check if user is logged in
+  runApp(MyApp(isLoggedIn: isLoggedIn));
+}
+
+// Function to check login status
+Future<bool> checkLoginStatus() async {
+  final prefs = await SharedPreferences.getInstance();
+  final String? token = prefs.getString('user_token');
+  return token != null; // Return true if token exists
 }
 
 class MyApp extends StatelessWidget {
+  final bool isLoggedIn;
+
+  MyApp({required this.isLoggedIn});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Home_page(), //
-    );
-  }
-}
-
-class Login extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Login',
-      home: Login(),
-    );
-  }
-}
-
-class Homepage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Home',
-      home: Home_page(),
-    );
-  }
-}
-
-class About extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'About this page',
-      home: About_page(),
-    );
-  }
-}
-
-class Contact extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'profile',
-      home: Contact(),
-    );
-  }
-}
-
-class subscription extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'subscription',
-      home: Subscription_page(),
-    );
-  }
-}
-
-class output extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'output',
-      home: OutputPage(),
-    );
-  }
-}
-
-class Signpage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sign in',
-      home: Signin(),
-    );
-  }
-}
-
-class Homepage_AfterLogin extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sign in',
-      home: Home_page_after_login(),
-    );
-  }
-}
-
-class ProfilePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sign in',
-      home: ProfilePage(),
+      home: isLoggedIn
+          ? Home_page_after_login() // استخدام الخلفية الثلاثية الأبعاد بعد تسجيل الدخول
+          : Home_page(), // الشاشة القديمة قبل تسجيل الدخول
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:ui_evelotion/home_page.dart';
 import 'package:ui_evelotion/output_page.dart';
+import 'package:ui_evelotion/profile.dart';
 
 import 'Login_page.dart';
 import 'buildNavButton.dart';
@@ -79,13 +81,12 @@ class _Home_pageState extends State<Home_page> {
                         child: Text(
                           "Start Generate",
                           style: TextStyle(
+                            color: Colors.black,
                             fontSize: 18,
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 9,
-                      ),
+                      SizedBox(height: 9),
                       RichText(
                         text: TextSpan(
                           text: 'You have 3 free prompts, want more? ',
@@ -113,17 +114,13 @@ class _Home_pageState extends State<Home_page> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 70,
-                      ),
+                      SizedBox(height: 70),
                       Center(
                         child: Text('Why Choose UI Evolution?',
                             style:
                                 TextStyle(fontSize: 22, color: Colors.black)),
                       ),
-                      SizedBox(
-                        height: 40,
-                      ),
+                      SizedBox(height: 40),
                       GridView.count(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(), //
